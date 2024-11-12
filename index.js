@@ -52,6 +52,32 @@ index.get("/get",async(request,response)=>{
 //This is user login request
 index.post("/login",async(request,response)=>{
      const data=request.body;
+     
+     const getUserQue=`select * from ourUsers 
+     where mail='${data.mail}'`;
+     const getUserDet=await db.get(getUserQue);
+     if(getUserDet){
+        const jwtAuth=jwt.verify(getUserDet.password,'Nesavali');
+        if(jwtAuth===data.password){
+            response.send({
+                passwordStatus:true,
+                userDet:getUserDet,
+                userStatus:true
+            })
+        }
+        else{
+            response.send({
+                passwordStatus:false,
+                userStatus:true
+            })
+        }
+     }
+     else{
+        response.send({
+            userStatus:false
+        })
+     }
+   
 
 })
 //usr Register request.
